@@ -2,27 +2,28 @@ import {
     IndexTable,
     TextStyle,
     Card,
+    Page,
     useIndexResourceState,
 } from '@shopify/polaris';
 import { useState, useEffect } from 'react';
 import React from 'react';
 
 function SimpleIndexTableExample() {
-   const [rowdata, setRowData] = useState([]);
-     const allGitData = []
+    const [rowdata, setRowData] = useState([]);
+    const allGitData = []
     async function gitData() {
         const tmp = [];
         const gitUser = await fetch('https://api.github.com/users');
         const allgitUser = await gitUser.json();
         allgitUser.forEach(user => {
             tmp.push({
-                id:user.id,
+                id: user.id,
                 name: user.login,
                 userPic: user.avatar_url,
                 userUrl: user.url,
                 userType: user.type,
-                
-                })
+
+            })
         });
         allGitData.push(allgitUser)
         setRowData(tmp);
@@ -60,25 +61,28 @@ function SimpleIndexTableExample() {
     );
 
     return (
-        <Card>
-            <IndexTable
-                resourceName={resourceName}
-                itemCount={customers.length}
-                selectedItemsCount={
-                    allResourcesSelected ? 'All' : selectedResources.length
-                }
-                onSelectionChange={handleSelectionChange}
-                headings={[
-                    { title: 'User Name' },
-                    { title: 'ID' },
-                    { title: 'User Pic' },
-                    { title: 'type' },
-                    { title: 'Visit Link' }
-                ]}
-            >
-                {rowMarkup}
-            </IndexTable>
-        </Card>
+        <Page fullWidth>
+            <TextStyle variation="strong">Index Table</TextStyle>
+            <Card>
+                <IndexTable
+                    resourceName={resourceName}
+                    itemCount={customers.length}
+                    selectedItemsCount={
+                        allResourcesSelected ? 'All' : selectedResources.length
+                    }
+                    onSelectionChange={handleSelectionChange}
+                    headings={[
+                        { title: 'User Name' },
+                        { title: 'ID' },
+                        { title: 'User Pic' },
+                        { title: 'type' },
+                        { title: 'Visit Link' }
+                    ]}
+                >
+                    {rowMarkup}
+                </IndexTable>
+            </Card>
+        </Page>
     );
 }
 

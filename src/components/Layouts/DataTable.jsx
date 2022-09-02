@@ -1,4 +1,4 @@
-import { Page, Card, DataTable } from '@shopify/polaris';
+import { Page, Card, DataTable,TextStyle } from '@shopify/polaris';
 import React, { useEffect, useState } from 'react';
 function DataTableExample() {
   const [rowdata, setRowData] = useState([]);
@@ -17,7 +17,7 @@ function DataTableExample() {
   }, []);
 
   return (
-    <Page title="Git Hub Users">
+    <Page title="Users DataTable">
       <Card>
         <DataTable
           columnContentTypes={[

@@ -1,10 +1,12 @@
-import { Heading } from '@shopify/polaris';
+import { Heading, Page } from '@shopify/polaris';
 import React from 'react';
 
 function Nav() {
     return (
         <>
-            <Heading>Welcome to Shopify Git Cloning</Heading>
+            <Page>
+                <Heading>Welcome to Shopify Git Cloning</Heading>
+            </Page>
         </>
     );
 }
