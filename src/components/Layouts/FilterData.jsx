@@ -162,7 +162,7 @@ function FilterData() {
         <Page title="Filters" fullWidth>
             <Grid columns={{ sm: 3 }}>
                 <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 12, xl: 12 }}>
-                    <div style={{ height: '2100px' }}>
+                    <div style={{ height: '2300px' }}>
                         <Card>
                             <ResourceList
                                 resourceName={{ singular: 'customer', plural: 'customers' }}
