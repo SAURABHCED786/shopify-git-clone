@@ -153,7 +153,6 @@ function FilterData() {
         });
         allGitData.push(allgitUser)
         setRowData(tmp);
-        console.log(tmp, "data type");
     }
     useEffect(() => {
         gitData();
