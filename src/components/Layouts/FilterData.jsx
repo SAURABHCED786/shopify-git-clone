@@ -7,9 +7,14 @@ import {
     Filters,
     Avatar,
     TextStyle,
-    Tag,
+    Stack,
+    Badge,
+    Button,
+    Modal,
+    TextContainer
 } from '@shopify/polaris';
 import { Page, Grid } from '@shopify/polaris';
+import { type } from '@testing-library/user-event/dist/type';
 import { useState, useEffect, useCallback } from 'react';
 
 function FilterData() {
@@ -19,8 +24,25 @@ function FilterData() {
     const [moneySpent, setMoneySpent] = useState(null);
     const [taggedWith, setTaggedWith] = useState(null);
     const [queryValue, setQueryValue] = useState(null);
+    const [active, setActive] = useState(false);
+    // if (accountStatus == 'enabled') {
+    //     alert(accountStatus+" Account Status Enabled..!")
+    // }
+    // if (accountStatus == 'not invited') {
+    //     alert(accountStatus+" Account Status Not Invited..!")
+    // }
+    // if (accountStatus == 'invited') {
+    //     alert(accountStatus+" Account Status Invited..!")
+    // }
+    // if (accountStatus == 'declined') {
+    //     alert(accountStatus+" Account Status Declined..!")
+    // }
+    // if(taggedWith){
+    //     console.log(taggedWith, "am taggedWith");
+    // }
 
-    
+
+
 
     const handleAccountStatusChange = useCallback(
         (value) => setAccountStatus(value),
@@ -42,6 +64,8 @@ function FilterData() {
         () => setAccountStatus(null),
         [],
     );
+    const handleChange = useCallback(() => setActive(!active), [active]);
+
     const handleMoneySpentRemove = useCallback(() => setMoneySpent(null), []);
     const handleTaggedWithRemove = useCallback(() => setTaggedWith(null), []);
     const handleQueryValueRemove = useCallback(() => setQueryValue(null), []);
@@ -50,11 +74,13 @@ function FilterData() {
         handleMoneySpentRemove();
         handleTaggedWithRemove();
         handleQueryValueRemove();
+        handleChange();
     }, [
         handleAccountStatusRemove,
         handleMoneySpentRemove,
         handleQueryValueRemove,
         handleTaggedWithRemove,
+        handleChange,
     ]);
 
     const filters = [
@@ -141,27 +167,29 @@ function FilterData() {
         const tmp = [];
         const gitUser = await fetch('https://api.github.com/users');
         const allgitUser = await gitUser.json();
-        allgitUser.forEach(user => {
-            tmp.push({
-                id: user.id,
-                name: user.login,
-                userPic: user.avatar_url,
-                userUrl: user.url,
-                userType: user.type,
 
-            })
+        allgitUser.forEach(user => {
+            if (queryValue == user.login) {
+                tmp.push({
+                    id: user.id,
+                    name: user.login,
+                    userPic: user.avatar_url,
+                    userUrl: user.html_url,
+                    userType: user.type,
+                });
+            }
         });
         allGitData.push(allgitUser)
         setRowData(tmp);
     }
     useEffect(() => {
         gitData();
-    }, []);
+    });
     return (
         <Page title="Filters" fullWidth>
             <Grid columns={{ sm: 3 }}>
                 <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 12, xl: 12 }}>
-                    <div style={{ height: '2300px' }}>
+                    <div style={{ height: '200px' }}>
                         <Card>
                             <ResourceList
                                 resourceName={{ singular: 'customer', plural: 'customers' }}
@@ -198,18 +226,64 @@ function FilterData() {
                                         <ResourceList.Item
                                             id={id}
                                             user={userPic}
-                                            url={userUrl}
+                                            // url={userUrl}
                                             media={media}
                                             accessibilityLabel={`View details for ${name}`}
+                                            onClick={handleChange}
                                         >
                                             <h3>
                                                 <TextStyle username={name} variation="strong">{name}</TextStyle>
-                                                <span style={{marginLeft: "16px"}}>
-                                                    <Tag>{userType}</Tag>
+                                                <span>
+                                                    <Stack>
+                                                        <Badge>{userType}</Badge>
+                                                    </Stack>
                                                 </span>
-                                                <span style={{marginLeft: "16px"}}>{userUrl}</span>
+                                                <span>{userUrl}</span>
                                             </h3>
+                                            <div style={{ height: '50px' }}>
+                                                <Modal
+                                                    activator={Filters}
+                                                    open={active}
+                                                    onClose={handleChange}
+                                                    title="Received user via github."
+                                                >
+                                                    <Modal.Section>
+                                                        <TextContainer>
+                                                            <Grid>
+                                                                <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 6 }}>
+                                                                    <div sectioned>
+                                                                        <img src={userPic} style={{ height: "150px", borderRadius: "50%" }} name={name} />
+                                                                    </div>
+                                                                </Grid.Cell>
+                                                                <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 6 }}>
+                                                                    <div title="Profile" sectioned>
+                                                                        <div style={{ marginTop: "20px" }}>
+                                                                            <div style={{ fontSize: "25px" }}>ID
+                                                                                <span style={{ fontSize: "25px", marginLeft: "12px" }}><b>{id}</b></span>
+                                                                            </div>
+                                                                            <div style={{ marginTop: "13px" }}>
+                                                                                <span style={{ fontSize: "25px" }}>{userType}</span>
+                                                                                <span style={{ fontSize: "25px", marginLeft: "12px" }}><b>{name}</b></span>
+                                                                            </div>
+                                                                            <div style={{ marginTop: "16px" }}>
+                                                                            <Button size="slim" url={userUrl}>View Profile</Button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </Grid.Cell>
+                                                            </Grid>
+                                                            <p>                                                       
+                                                                Use GitHub posts to share your products with millions of
+                                                                people. Let shoppers buy from your store without leaving
+                                                                Github.
+                                                            </p>
+                                                        </TextContainer>
+                                                    </Modal.Section>
+                                                </Modal>
+                                            </div>
+
                                         </ResourceList.Item>
+
                                     );
                                 }}
                             />
